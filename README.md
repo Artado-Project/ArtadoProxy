@@ -13,11 +13,11 @@ Artado Proxy is an API that allows users to search the web more privately by sen
 
 ### Deploy to Netlify
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/yourusername/artado-proxy)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Artado-Project/ArtadoProxy)
 
 ### Deploy with Workers
 
-[![Deploy with Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/yourusername/artado-proxy)
+[![Deploy with Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/Artado-Project/ArtadoProxy)
 
 ### Prerequisites
 
