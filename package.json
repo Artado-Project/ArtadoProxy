@@ -1,0 +1,36 @@
+{
+  "name": "artadoproxy",
+  "version": "1.0.0",
+  "description": "Proxy for Artado Search",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start": "tsc && node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "proxy"
+  },
+  "keywords": [
+    "artado",
+    "search",
+    "api"
+  ],
+  "author": "Arda Tahtacı",
+  "license": "AGPL-3.0-or-later",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "body-parser": "^1.20.2",
+    "cheerio": "^1.0.0-rc.12",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "iconv-lite": "^0.6.3"
+  },
+  "devDependencies": {
+    "@types/body-parser": "^1.19.5",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.12.12",
+    "typescript": "^5.4.5"
+  }
+}
