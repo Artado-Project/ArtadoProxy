@@ -1,3 +1,4 @@
 name = "artadoproxy"
 main = "./dist/index.js"
 workers_dev = true
+type = "javascript"
