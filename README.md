@@ -34,7 +34,7 @@ Artado Proxy is an API that allows users to search the web more privately by sen
 
    ```bash
    git clone https://github.com/Artado-Project/ArtadoProxy
-   cd artado-proxy
+   cd ArtadoProxy
    ```
 
 2. **Install Dependencies**
