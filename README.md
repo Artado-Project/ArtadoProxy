@@ -21,7 +21,7 @@ Artado Proxy is an API that allows users to search the web more privately by sen
 
 ### Deploy to Heroku
 
-[![Deploy with Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+[![Deploy with Heroku](https://www.herokucdn.com/deploy/button.svg)](https://www.heroku.com/deploy?template=https://github.com/Artado-Project/ArtadoProxy)
 
 ### Prerequisites
 
