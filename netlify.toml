@@ -1,4 +1,5 @@
 [build]
-  command = "npm run build && npm run start"
-  publish = "dist"
+  command = "npm run build"
 
+[context.production]
+  command = "npm run start"
