@@ -10,7 +10,11 @@ Artado Proxy is an API that allows users to search the web more privately by sen
 - Allows for self-hosted deployment
 
 ## Self-Hosting Instructions
+### Deploy to Repl.it
 
+[![Import to Repl.it](https://img.shields.io/website?color=044A10&down_message=Import%20to%20Replit&label=%20&logo=replit&up_message=Import%20to%20Replit&url=https%3A%2F%2Freplit.com)](https://replit.com/new/github/Artado-Project/ArtadoProxy)
+
+<!--
 ### Deploy to Netlify
 
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Artado-Project/ArtadoProxy)
@@ -22,7 +26,7 @@ Artado Proxy is an API that allows users to search the web more privately by sen
 ### Deploy to Heroku
 
 [![Deploy with Heroku](https://www.herokucdn.com/deploy/button.svg)](https://www.heroku.com/deploy?template=https://github.com/Artado-Project/ArtadoProxy)
-
+-->
 ### Prerequisites
 
 - Node.js and npm installed
