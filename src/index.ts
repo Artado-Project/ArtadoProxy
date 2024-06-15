@@ -41,7 +41,7 @@ async function getGoogle(q, n): Promise<Results[]> {
         const description: string = $(productHTMLElement).find("div.BNeawe.s3v9rd.AP7Wnd").text() as string;
 
         const urlnospace = displayUrl.replace(/ /g, '');
-        let url = urlnospace.replace(/›/g, '');
+        let url = urlnospace.replace(/\u203a/g, '/');
 
         if (!/^https?:\/\//i.test(url)) {
             url = 'https://' + url;
@@ -89,7 +89,7 @@ async function getBing(q, n): Promise<Results[]> {
         const desc: string = $(productHTMLElement).find("p.b_lineclamp4.b_algoSlug").text() as string;
 
         const urlnospace = displayUrl.replace(/ /g, '');
-        let url = urlnospace.replace(/›/g, '');
+        let url = urlnospace.replace(/ï¿½/g, '');
 
         if (!/^https?:\/\//i.test(url)) {
             url = 'https://' + url;
