@@ -1,13 +1,12 @@
-name: Deploy to Workers
-
-# this action is for the "deploy to cloudflare" button
-
-on: ["repository_dispatch"]
-
+name: Deploy Worker
+on:
+  push:
+  pull_request:
+  repository_dispatch:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+    timeout-minutes: 60
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -27,3 +26,4 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
