@@ -38,17 +38,25 @@ async function getGoogle(q, n): Promise<Results[]> {
     $("div.Gx5Zad.fP1Qef.xpd.EtOod.pkphOe").each((div, productHTMLElement) => {
         const title: string = $(productHTMLElement).find("div.BNeawe.vvjwJb.AP7Wnd").text() as string;
         const displayUrl: string = $(productHTMLElement).find("div.BNeawe.UPmit.AP7Wnd.lRVwie").text() as string;
+        const trackerurl: string = $(productHTMLElement).find("div.egMi0.kCrYT a").attr("href") as string;
         const description: string = $(productHTMLElement).find("div.BNeawe.s3v9rd.AP7Wnd").text() as string;
 
-        const urlnospace = displayUrl.replace(/ /g, '');
-        let url = urlnospace.replace(/\u203a/g, '/');
+        const prefix = '/url?q=';
+        const suffix = '&sa=';
+        let url;
 
-        if (!/^https?:\/\//i.test(url)) {
-            url = 'https://' + url;
+        if (trackerurl.startsWith(prefix)) {
+            const startIndex = prefix.length;
+            const endIndex = trackerurl.indexOf(suffix);
+
+            if (endIndex !== -1) {
+                url = trackerurl.substring(startIndex, endIndex);
+            } else {
+                url = trackerurl.substring(startIndex);
+            }
         }
-
-        if (!url.endsWith('/')) {
-            url += '/';
+        else {
+            url = trackerurl;
         }
 
         const result: Results = {
