@@ -1,4 +1,3 @@
 name = "artadoproxy"
-main = "./src/index.ts"
+main = "./dist/index.js"
 workers_dev = true
-type = "javascript"
