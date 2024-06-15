@@ -89,7 +89,7 @@ async function getBing(q, n): Promise<Results[]> {
         const desc: string = $(productHTMLElement).find("p.b_lineclamp4.b_algoSlug").text() as string;
 
         const urlnospace = displayUrl.replace(/ /g, '');
-        let url = urlnospace.replace(/�/g, '');
+        let url = urlnospace.replace(/\u203a/g, '/');
 
         if (!/^https?:\/\//i.test(url)) {
             url = 'https://' + url;
