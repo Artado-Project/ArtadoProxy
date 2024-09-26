@@ -6,6 +6,13 @@ import { load } from "cheerio";
 import { Results } from "./results";
 import * as iconv from 'iconv-lite';
 
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100 // limit each IP to 100 requests per windowMs
+});
+
 const app = express();
 
 let requestCount = 0;
@@ -31,32 +38,37 @@ async function getGoogle(q, n): Promise<Results[]> {
         responseType: 'arraybuffer'
     });
     const html = iconv.decode(Buffer.from(response.data), 'ISO-8859-1');
-    console.log(html);
 
     const $ = load(html);
 
-    $("div.Gx5Zad.fP1Qef.xpd.EtOod.pkphOe").each((div, productHTMLElement) => {
+    $("div.Gx5Zad.xpd.EtOod.pkphOe").each((div, productHTMLElement) => {
         const title: string = $(productHTMLElement).find("div.BNeawe.vvjwJb.AP7Wnd").text() as string;
         const displayUrl: string = $(productHTMLElement).find("div.BNeawe.UPmit.AP7Wnd.lRVwie").text() as string;
         const trackerurl: string = $(productHTMLElement).find("div.egMi0.kCrYT a").attr("href") as string;
         const description: string = $(productHTMLElement).find("div.BNeawe.s3v9rd.AP7Wnd").text() as string;
 
+        // Skip this item if title, displayUrl, or description is missing
+        if (!title || !displayUrl) {
+            console.log("Skipping result due to missing fields");
+            return;  // Continue to the next iteration
+        }
+
         const prefix = '/url?q=';
         const suffix = '&sa=';
         let url;
+        if (trackerurl) {
+            if (trackerurl.startsWith(prefix)) {
+                const startIndex = prefix.length;
+                const endIndex = trackerurl.indexOf(suffix);
 
-        if (trackerurl.startsWith(prefix)) {
-            const startIndex = prefix.length;
-            const endIndex = trackerurl.indexOf(suffix);
-
-            if (endIndex !== -1) {
-                url = trackerurl.substring(startIndex, endIndex);
+                if (endIndex !== -1) {
+                    url = trackerurl.substring(startIndex, endIndex);
+                } else {
+                    url = trackerurl.substring(startIndex);
+                }
             } else {
-                url = trackerurl.substring(startIndex);
+                url = trackerurl;
             }
-        }
-        else {
-            url = trackerurl;
         }
 
         const result: Results = {
@@ -197,6 +209,8 @@ app.get("/api", async (req, res) => {
         return res.status(500).send("Internal Server Error");
     }
 })
+
+app.use('/api', limiter);
 
 app.get('/status', (req: Request, res: Response) => {
     const status = requestCount > REQUEST_THRESHOLD ? 'BUSY' : 'OK';
