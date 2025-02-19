@@ -106,7 +106,7 @@ async function getBing(q, n): Promise<Results[]> {
     $("li.b_algo").each((div, productHTMLElement) => {
         const title: string = $(productHTMLElement).find("li.b_algo h2 a").text() as string;
         let displayUrl: string = $(productHTMLElement).find("li.b_algo h2 a").attr('href') as string;
-        const desc: string = $(productHTMLElement).find("p.b_lineclamp4.b_algoSlug").text() as string;
+        const desc: string = $(productHTMLElement).find("p.b_lineclamp4").text() as string;
 
         const urlnospace = displayUrl.replace(/ /g, '');
         let url = urlnospace.replace(/\u203a/g, '/');
