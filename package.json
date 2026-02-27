@@ -1,0 +1,60 @@
+{
+  "name": "artado-proxy",
+  "version": "1.0.0",
+  "description": "High-performance meta-search proxy service with multi-engine support",
+  "main": "dist/server.js",
+  "type": "module",
+  "author": {
+    "name": "Artado Team",
+    "email": "info@artado.com",
+    "url": "https://artado.com"
+  },
+  "license": "MIT",
+  "keywords": [
+    "search",
+    "proxy",
+    "metasearch",
+    "scraping",
+    "api",
+    "typescript",
+    "nodejs",
+    "privacy",
+    "aggregator"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sxinar/artstelve-proxy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Sxinar/artstelve-proxy/issues"
+  },
+  "homepage": "https://github.com/Sxinar/artstelve-proxy#readme",
+  "engines": {
+    "node": ">=20 <21"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "node --enable-source-maps dist/server.js",
+    "build": "tsc -p tsconfig.json",
+    "clean": "rm -rf dist",
+    "prebuild": "npm run clean",
+    "lint": "echo 'Linting not configured yet'",
+    "test": "echo 'Tests not configured yet'"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^4.19.2",
+    "lru-cache": "^10.2.2",
+    "p-limit": "^6.1.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.10.2",
+    "cross-env": "^7.0.3",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}
