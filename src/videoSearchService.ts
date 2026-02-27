@@ -1,6 +1,6 @@
 import { LRUCache } from 'lru-cache';
 import type { VideoResult } from './types.js';
-import { googleVideos } from './engines/google-videos.js';
+import { googleVideos } from './engines/videos.js';
 
 const videoEngines = [googleVideos];
 

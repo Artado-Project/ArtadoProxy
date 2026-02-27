@@ -1,6 +1,6 @@
 import { LRUCache } from 'lru-cache';
 import type { ImageResult } from './types.js';
-import { googleImages } from './engines/google-images.js';
+import { googleImages } from './engines/images.js';
 
 const imageEngines = [googleImages];
 

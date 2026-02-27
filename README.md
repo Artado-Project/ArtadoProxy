@@ -10,7 +10,6 @@ ArtadoProxy, birden fazla arama motorundan sonuçları bir araya getiren, gizlil
 
 ## Desteklenen Arama Motorları
 
-- **Google** - Web arama sonuçları
 - **DuckDuckGo** - Gizlilik odaklı arama
 - **Brave** - Modern arama motoru
 - **Startpage** - Gizlilik odaklı meta-arama
@@ -33,7 +32,7 @@ GET /search
 | Parametre | Tip | Varsayılan | Açıklama |
 |-----------|------|------------|-----------|
 | q | string | Zorunlu | Arama sorgusu |
-| engines | string | Tüm motorlar | Virgülle ayrılmış motor listesi (örn: "google,duckduckgo,brave") |
+| engines | string | Tüm motorlar | Virgülle ayrılmış motor listesi (örn: "duckduckgo,brave") |
 | limitTotal | number | 20 | Toplam sonuç sayısı (maks: 200) |
 | limitPerEngine | number | 5 | Her motor için sonuç sayısı (maks: 20) |
 | pageno | number | 1 | Sayfa numarası |
@@ -46,29 +45,29 @@ GET /search
 
 #### Örnek İstek
 ```
-GET /search?q=typescript&engines=google,duckduckgo&limitTotal=10&region=tr
+GET /search?q=typescript&engines=duckduckgo,brave&limitTotal=10&region=tr
 ```
 
 #### Yanıt Formatı
 ```json
 {
   "query": "typescript",
-  "engines": ["google", "duckduckgo"],
+  "engines": ["duckduckgo", "brave"],
   "limitTotal": 10,
   "limitPerEngine": 5,
   "pageno": 1,
   "count": 8,
   "results": [
     {
-      "engine": "google",
+      "engine": "duckduckgo",
       "title": "TypeScript: JavaScript That Scales",
       "url": "https://www.typescriptlang.org/",
-      "snippet": "TypeScript is a strongly typed programming language that builds on JavaScript..."
+      "snippet": "TypeScript is a strongly typed programming language..."
     }
   ],
   "errors": [
     {
-      "engine": "duckduckgo",
+      "engine": "brave",
       "message": "timeout_error"
     }
   ]
@@ -138,6 +137,13 @@ GET /health
 
 JSON formatında servis sağlığı bilgisi döner.
 
+#### API Dokümantasyonu
+```
+GET /endpoint
+```
+
+Detaylı API dokümantasyonu sayfası döner.
+
 #### Yanıt Formatı
 ```json
 {
@@ -152,9 +158,9 @@ JSON formatında servis sağlığı bilgisi döner.
     "uptimeSec": 171
   },
   "engines": {
-    "supported": ["duckduckgo", "google", "brave", "startpage", "qwant", "mojeek", "ask", "marginalia"],
+    "supported": ["duckduckgo", "brave", "startpage", "qwant", "mojeek", "ask", "marginalia"],
     "health": {
-      "google": {
+      "duckduckgo": {
         "totalRequests": 10,
         "totalErrors": 2,
         "totalResults": 45,
@@ -226,8 +232,6 @@ npm start
 | NODE_ENV | development | Çalışma ortamı (development/production) |
 | GLOBAL_ENGINE_CONCURRENCY | 10 | Aynı anda yapılabilecek toplam motor isteği |
 | PER_ENGINE_CONCURRENCY | 3 | Her motor için eş zamanlı istek sınırı |
-| GITHUB_CLIENT_ID | - | GitHub OAuth (admin panel için) |
-| GITHUB_CLIENT_SECRET | - | GitHub OAuth (admin panel için) |
 
 ### Motor Yapılandırması
 

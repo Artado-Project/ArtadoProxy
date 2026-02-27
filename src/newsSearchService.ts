@@ -1,6 +1,6 @@
 import { LRUCache } from 'lru-cache';
 import type { NewsResult } from './types.js';
-import { googleNews } from './engines/google-news.js';
+import { googleNews } from './engines/news.js';
 
 const newsEngines = [googleNews];
 

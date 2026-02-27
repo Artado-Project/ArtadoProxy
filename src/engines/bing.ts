@@ -53,13 +53,23 @@ export const bing: Engine = {
     const $ = loadHtml(html);
 
     const results: SearchResult[] = [];
-    const nodes = $('li.b_algo').toArray();
+    // Bing'in farklı HTML yapılarını dene
+    const nodes = $('li.b_algo, .b_algo, .b_result, [data-id]').toArray();
     for (const el of nodes) {
       const n = $(el as AnyNode);
-      const a = n.find('h2 a[href]').first();
-      const title = (a.text() || '').trim();
-      const href = (a.attr('href') || '').trim();
-      const snippet = (n.find('.b_caption p').first().text() || '').trim();
+      
+      // Başlık için birden fazla seçici dene
+      const title = n.find('h2, h3, a[href] h2, a[href] h3, .b_title').first().text().trim();
+      
+      // URL için farklı yöntemler dene
+      let href = n.find('a[href]').first().attr('href') || '';
+      if (href && href.startsWith('/')) {
+        href = `https://www.bing.com${href}`;
+      }
+      
+      // Snippet için birden fazla seçici dene
+      const snippet = (n.find('.b_caption p, .b_snippet, p, .description').first().text() || '').trim();
+      
       if (!title || !href) continue;
       results.push({ engine: 'bing', title, url: href, snippet: snippet || undefined });
       if (results.length >= limit) break;

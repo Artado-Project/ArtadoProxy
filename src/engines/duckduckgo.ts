@@ -61,10 +61,20 @@ export const duckduckgo: Engine = {
         .toArray()
         .map((el: AnyNode) => {
           const a = $(el);
-          const title = (a.text() || '').trim();
+          let title = (a.text() || '').trim();
           const href = (a.attr('href') || '').trim();
           const row = a.closest('tr');
           const snippet = (row.find('td.result-snippet').text() || '').trim();
+          
+          // Başlık boşsa veya çok kısaysa alternatif başlık seçicileri dene
+          if (!title || title.length < 3) {
+            // Wikipedia ve diğer özel sayfalar için alternatif başlık seçicileri
+            const altTitle = a.find('h1, h2, h3, .title, .result-title, .heading').first().text().trim();
+            if (altTitle && altTitle.length > 3) {
+              title = altTitle;
+            }
+          }
+          
           return { title, url: href, snippet };
         });
 

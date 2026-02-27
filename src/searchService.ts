@@ -146,15 +146,10 @@ function matchesDomain(set: Set<string>, host: string): boolean {
 
 const engineWeight: Record<SearchEngineId, number> = {
   duckduckgo: 1.0,
-  google: 1.0,
-  bing: 0.97,
-  yandex: 0.9,
   brave: 0.95,
   startpage: 0.9,
   qwant: 0.85,
-  ecosia: 0.8,
   mojeek: 0.75,
-  yahoo: 0.7,
   ask: 0.6,
   marginalia: 0.4
 };
@@ -368,7 +363,7 @@ export async function metaSearch(params: {
   }
 
   const requested = params.engines;
-  const preferred: SearchEngineId[] = ['google', 'bing', 'yandex', 'brave'];
+  const preferred: SearchEngineId[] = ['brave', 'duckduckgo'];
   const wanted = preferred.filter((e) => requested.includes(e));
   const wantedOrDefault = wanted.length ? wanted : preferred.filter((e) => engineMap.has(e));
 
@@ -376,28 +371,13 @@ export async function metaSearch(params: {
   const quotas: Array<{ engine: SearchEngineId; limit: number }> = [];
 
   const wantSet = new Set(wantedOrDefault);
-  const wantGoogle = wantSet.has('google');
-  const wantBing = wantSet.has('bing');
-  const wantYandex = wantSet.has('yandex');
   const wantBrave = wantSet.has('brave');
+  const wantDuckDuckGo = wantSet.has('duckduckgo');
 
   // Scale quotas with requested total.
-  // Baseline total=25 => google 10, bing 7, yandex/brave share remaining.
   const scale = Math.max(0.2, totalTarget / 25);
-  if (wantGoogle) quotas.push({ engine: 'google', limit: Math.max(5, Math.round(10 * scale)) });
-  if (wantBing) quotas.push({ engine: 'bing', limit: Math.max(4, Math.round(7 * scale)) });
-
-  const remainingEngines: SearchEngineId[] = [];
-  if (wantYandex) remainingEngines.push('yandex');
-  if (wantBrave) remainingEngines.push('brave');
-
-  // Remaining budget; distribute across yandex/brave with soft bounds.
-  let remaining = totalTarget - quotas.reduce((s, q) => s + q.limit, 0);
-  if (remaining < 0) remaining = 0;
-  const per = remainingEngines.length ? Math.ceil(remaining / remainingEngines.length) : 0;
-  for (const e of remainingEngines) {
-    quotas.push({ engine: e, limit: Math.max(3, per) });
-  }
+  if (wantBrave) quotas.push({ engine: 'brave', limit: Math.max(3, Math.round(5 * scale)) });
+  if (wantDuckDuckGo) quotas.push({ engine: 'duckduckgo', limit: Math.max(3, Math.round(5 * scale)) });
 
   // If client asked only one engine, don't force 20.
   if (requested.length === 1 && requested[0] && engineMap.has(requested[0])) {

@@ -8,7 +8,6 @@ export interface NewsEngine {
 
 async function scrapeGoogleRSS(query: string, signal?: AbortSignal): Promise<NewsResult[]> {
     try {
-        // hl=tr ve gl=TR ile Türkiye sonuçlarını garantiye alıyoruz
         const url = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=tr&gl=TR&ceid=TR:tr`;
         const res = await fetch(url, { signal });
         const xml = await res.text();
@@ -20,15 +19,26 @@ async function scrapeGoogleRSS(query: string, signal?: AbortSignal): Promise<New
             const link = $(el).find('link').text();
             const source = $(el).find('source').text();
             const pubDate = $(el).find('pubDate').text();
+            const description = $(el).find('description').text();
+            
+            // RSS'ten resim URL'si almayı dene
+            let imageUrl = '';
+            if (description) {
+                const imgMatch = description.match(/<img[^>]+src=["']([^"']+)["']/);
+                if (imgMatch) {
+                    imageUrl = imgMatch[1];
+                }
+            }
 
             if (title && link) {
                 results.push({
                     engine: 'google-news',
-                    title: title,
+                    title,
                     url: link,
                     source: source || 'Haber Kaynağı',
                     publishDate: pubDate,
-                    snippet: '' 
+                    snippet: description.replace(/<[^>]*>/g, '').substring(0, 200),
+                    imageUrl: imageUrl || undefined
                 });
             }
         });
@@ -54,15 +64,23 @@ async function scrapeDuckDuckGoNews(query: string, signal?: AbortSignal): Promis
             const link = $(el).find('.result__title a').attr('href') || '';
             const source = $(el).find('.result__url').text().trim();
             const snippet = $(el).find('.result__snippet').text().trim();
+            
+            // Resim URL'sini almayı dene
+            let imageUrl = '';
+            const imgEl = $(el).find('img');
+            if (imgEl.length > 0) {
+                imageUrl = imgEl.attr('src') || imgEl.attr('data-src') || '';
+            }
 
             if (title && link) {
                 results.push({
-                    engine: 'google-news', // Tutarlılık için aynı id
+                    engine: 'google-news',
                     title,
                     url: link.startsWith('http') ? link : `https:${link}`,
                     source: source,
                     snippet: snippet,
-                    publishDate: ''
+                    publishDate: '',
+                    imageUrl: imageUrl || undefined
                 });
             }
         });

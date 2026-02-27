@@ -53,8 +53,8 @@ app.get('/images', (_req: Request, res: Response) => {
   </head>
   <body>
     <header>
-      <h1>🖼️ Görsel Arama Testi</h1>
-      <div class="sub">Running on <span>http://localhost:${port}</span> • <a href="/">Home</a> • <a href="/videos">Videos</a> • <a href="/news">News</a> • <a href="/status">Status</a></div>
+      <h1>Görsel Arama Testi</h1>
+      <div class="sub">Running on <span>http://localhost:${port}</span> • <a href="/">Home</a> • <a href="/videos">Videos</a> • <a href="/news">News</a> • <a href="/status">Status</a> • <a href="/endpoint">API Docs</a></div>
     </header>
     <main>
       <div class="card">
@@ -91,7 +91,7 @@ app.get('/images', (_req: Request, res: Response) => {
         const limit = parseInt(el('limit').value) || 50;
         
         if (!q) {
-          el('error').textContent = '⚠️ Lütfen bir arama sorgusu girin!';
+          el('error').textContent = 'Lutfen bir arama sorgusu girin!';
           el('error').style.display = 'block';
           return;
         }
@@ -146,7 +146,7 @@ app.get('/images', (_req: Request, res: Response) => {
           }
         } catch (e) {
           el('loading').style.display = 'none';
-          el('error').textContent = '❌ Hata: ' + String(e);
+          el('error').textContent = 'Hata: ' + String(e);
           el('error').style.display = 'block';
         } finally {
           el('runTest').disabled = false;
@@ -189,8 +189,8 @@ app.get('/videos', (_req: Request, res: Response) => {
   </head>
   <body>
     <header>
-      <h1>🎥 Video Search Test</h1>
-      <div class="sub">Running on <span>http://localhost:${port}</span> • <a href="/">Home</a> • <a href="/images">Images</a> • <a href="/news">News</a></div>
+      <h1>Video Search Test</h1>
+      <div class="sub">Running on <span>http://localhost:${port}</span> • <a href="/">Home</a> • <a href="/images">Images</a> • <a href="/news">News</a> • <a href="/endpoint">API Docs</a></div>
     </header>
     <main>
       <div class="card">
@@ -259,8 +259,8 @@ app.get('/news', (_req: Request, res: Response) => {
   </head>
   <body>
     <header>
-      <h1>📰 News Search Test</h1>
-      <div class="sub">Running on <span>http://localhost:${port}</span> • <a href="/">Home</a> • <a href="/images">Images</a> • <a href="/videos">Videos</a></div>
+      <h1>News Search Test</h1>
+      <div class="sub">Running on <span>http://localhost:${port}</span> • <a href="/">Home</a> • <a href="/images">Images</a> • <a href="/videos">Videos</a> • <a href="/endpoint">API Docs</a></div>
     </header>
     <main>
       <div class="card">
@@ -347,7 +347,7 @@ app.get('/', (_req: Request, res: Response) => {
   <body>
     <header>
       <h1>ArtadoProxy Status</h1>
-      <div class="sub">Running on <span class="v">http://localhost:${port}</span> • <a href="/status">/status</a> • <a href="/health">/health</a> • <a href="/images">Images</a> • <a href="/videos">Videos</a> • <a href="/news">News</a></div>
+      <div class="sub">Running on <span class="v">http://localhost:${port}</span> • <a href="/status">/status</a> • <a href="/health">/health</a> • <a href="/images">Images</a> • <a href="/videos">Videos</a> • <a href="/news">News</a> • <a href="/endpoint">API Docs</a></div>
     </header>
     <main>
       <div class="grid">
@@ -1023,5 +1023,222 @@ app.get('/search/news', async (req: Request, res: Response) => {
   } finally {
     clearTimeout(t);
   }
+});
+
+app.get('/endpoint', (_req: Request, res: Response) => {
+  const port = Number(process.env.PORT ?? 8787);
+  res.setHeader('content-type', 'text/html; charset=utf-8');
+  res.end(`<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>API Documentation - ArtadoProxy</title>
+    <style>
+      body { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 0; background: #0b1020; color: #e8eefc; }
+      header { padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); }
+      h1 { margin: 0; font-size: 18px; font-weight: 650; letter-spacing: 0.2px; }
+      .sub { margin-top: 6px; color: rgba(232,238,252,0.72); font-size: 13px; }
+      main { padding: 18px 24px 30px; max-width: 1400px; }
+      .section { margin-bottom: 32px; }
+      h2 { font-size: 16px; font-weight: 600; margin: 0 0 12px 0; color: #9cc2ff; }
+      h3 { font-size: 14px; font-weight: 600; margin: 16px 0 8px 0; color: #e8eefc; }
+      code { background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+      pre { background: rgba(0,0,0,0.25); border-radius: 8px; padding: 12px; overflow-x: auto; margin: 8px 0; }
+      table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+      th, td { padding: 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 13px; }
+      th { color: #9cc2ff; font-weight: 600; }
+      tr:hover { background: rgba(255,255,255,0.02); }
+      .endpoint { background: rgba(96,165,250,0.1); border: 1px solid rgba(96,165,250,0.3); border-radius: 8px; padding: 16px; margin: 12px 0; }
+      .method { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 8px; }
+      .get { background: rgba(70,211,154,0.2); color: #46d39a; }
+      .badge { display: inline-block; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); padding: 4px 8px; border-radius: 6px; font-size: 11px; margin: 2px; }
+      a { color: #9cc2ff; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>API Documentation</h1>
+      <div class="sub">Running on <span class="v">http://localhost:${port}</span> • <a href="/">Home</a> • <a href="/status">/status</a> • <a href="/health">/health</a></div>
+    </header>
+    <main>
+      <div class="section">
+        <h2>Genel Bilgi</h2>
+        <p>ArtadoProxy, birden fazla arama motorundan sonuçları bir araya getiren yüksek performanslı bir meta-arama servisi. Tüm API endpoint'leri JSON formatında yanıt döner.</p>
+      </div>
+
+      <div class="section">
+        <h2>Web Arama</h2>
+        <div class="endpoint">
+          <div><span class="method get">GET</span><code>/search</code></div>
+          <p style="margin: 12px 0 8px 0; color: rgba(232,238,252,0.7);">Standart web araması sonuçlarını döner.</p>
+          <h3>Parametreler</h3>
+          <table>
+            <tr><th>Parametre</th><th>Tip</th><th>Varsayılan</th><th>Açıklama</th></tr>
+            <tr><td>q</td><td>string</td><td>Zorunlu</td><td>Arama sorgusu</td></tr>
+            <tr><td>engines</td><td>string</td><td>Tüm motorlar</td><td>Virgülle ayrılmış motor listesi</td></tr>
+            <tr><td>limitTotal</td><td>number</td><td>20</td><td>Toplam sonuç sayısı (maks: 200)</td></tr>
+            <tr><td>limitPerEngine</td><td>number</td><td>5</td><td>Her motor için sonuç sayısı (maks: 20)</td></tr>
+            <tr><td>pageno</td><td>number</td><td>1</td><td>Sayfa numarası</td></tr>
+            <tr><td>offset</td><td>number</td><td>-</td><td>Sonuç başlangıç ofseti</td></tr>
+            <tr><td>region</td><td>string</td><td>-</td><td>Bölge kodu (örn: tr, us)</td></tr>
+            <tr><td>includeDomains</td><td>string</td><td>-</td><td>Sadece belirli domain'leri dahil et</td></tr>
+            <tr><td>excludeDomains</td><td>string</td><td>-</td><td>Belirli domain'leri hariç tut</td></tr>
+            <tr><td>cache</td><td>string</td><td>"1"</td><td>Önbellek kullanımı ("1" veya "0")</td></tr>
+            <tr><td>timeoutMs</td><td>number</td><td>12000</td><td>İstek zaman aşımı süresi (ms)</td></tr>
+          </table>
+          <h3>Örnek İstek</h3>
+          <pre>GET /search?q=typescript&engines=duckduckgo,brave&limitTotal=10&region=tr</pre>
+          <h3>Yanıt Formatı</h3>
+          <pre>{
+  "query": "typescript",
+  "engines": ["duckduckgo", "brave"],
+  "limitTotal": 10,
+  "limitPerEngine": 5,
+  "pageno": 1,
+  "count": 8,
+  "results": [
+    {
+      "engine": "duckduckgo",
+      "title": "TypeScript: JavaScript That Scales",
+      "url": "https://www.typescriptlang.org/",
+      "snippet": "TypeScript is a strongly typed programming language..."
+    }
+  ],
+  "errors": [
+    {
+      "engine": "brave",
+      "message": "timeout_error"
+    }
+  ]
+}</pre>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Görsel Arama</h2>
+        <div class="endpoint">
+          <div><span class="method get">GET</span><code>/search/images</code></div>
+          <h3>Parametreler</h3>
+          <table>
+            <tr><th>Parametre</th><th>Tip</th><th>Varsayılan</th><th>Açıklama</th></tr>
+            <tr><td>q</td><td>string</td><td>Zorunlu</td><td>Arama sorgusu</td></tr>
+            <tr><td>limitTotal</td><td>number</td><td>50</td><td>Toplam sonuç sayısı (maks: 200)</td></tr>
+            <tr><td>pageno</td><td>number</td><td>1</td><td>Sayfa numarası</td></tr>
+            <tr><td>cache</td><td>string</td><td>"1"</td><td>Önbellek kullanımı</td></tr>
+          </table>
+          <h3>Örnek İstek</h3>
+          <pre>GET /search/images?q=nature&limitTotal=20</pre>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Video Arama</h2>
+        <div class="endpoint">
+          <div><span class="method get">GET</span><code>/search/videos</code></div>
+          <h3>Parametreler</h3>
+          <table>
+            <tr><th>Parametre</th><th>Tip</th><th>Varsayılan</th><th>Açıklama</th></tr>
+            <tr><td>q</td><td>string</td><td>Zorunlu</td><td>Arama sorgusu</td></tr>
+            <tr><td>limitTotal</td><td>number</td><td>30</td><td>Toplam sonuç sayısı (maks: 100)</td></tr>
+            <tr><td>pageno</td><td>number</td><td>1</td><td>Sayfa numarası</td></tr>
+            <tr><td>cache</td><td>string</td><td>"1"</td><td>Önbellek kullanımı</td></tr>
+          </table>
+          <h3>Örnek İstek</h3>
+          <pre>GET /search/videos?q=typescript+tutorial</pre>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Haber Arama</h2>
+        <div class="endpoint">
+          <div><span class="method get">GET</span><code>/search/news</code></div>
+          <h3>Parametreler</h3>
+          <table>
+            <tr><th>Parametre</th><th>Tip</th><th>Varsayılan</th><th>Açıklama</th></tr>
+            <tr><td>q</td><td>string</td><td>Zorunlu</td><td>Arama sorgusu</td></tr>
+            <tr><td>limitTotal</td><td>number</td><td>30</td><td>Toplam sonuç sayısı (maks: 100)</td></tr>
+            <tr><td>pageno</td><td>number</td><td>1</td><td>Sayfa numarası</td></tr>
+            <tr><td>cache</td><td>string</td><td>"1"</td><td>Önbellek kullanımı</td></tr>
+          </table>
+          <h3>Örnek İstek</h3>
+          <pre>GET /search/news?q=artificial+intelligence</pre>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Durum ve Sağlık</h2>
+        <div class="endpoint">
+          <div><span class="method get">GET</span><code>/status</code></div>
+          <p>HTML formatında detaylı servis durumu sayfası döner.</p>
+        </div>
+        <div class="endpoint">
+          <div><span class="method get">GET</span><code>/health</code></div>
+          <p>JSON formatında servis sağlığı bilgisi döner.</p>
+          <h3>Yanıt Formatı</h3>
+          <pre>{
+  "ok": true,
+  "service": "proxy",
+  "now": "2026-02-27T10:33:11.291Z",
+  "runtime": {
+    "node": "v20.19.2",
+    "pid": 25350,
+    "platform": "linux",
+    "arch": "x64",
+    "uptimeSec": 171
+  },
+  "engines": {
+    "supported": ["duckduckgo", "google", "brave", "startpage", "qwant", "mojeek", "ask", "marginalia"],
+    "health": {
+      "google": {
+        "totalRequests": 10,
+        "totalErrors": 2,
+        "totalResults": 45,
+        "avgResponseTime": 850.5,
+        "lastSuccess": "2026-02-27T10:30:00.000Z",
+        "lastError": "2026-02-27T10:32:00.000Z",
+        "lastErrorMessage": "blocked_or_captcha"
+      }
+    }
+  },
+  "memory": {
+    "rss": 109563904,
+    "heapTotal": 27860992,
+    "heapUsed": 20077608,
+    "external": 5106692
+  }
+}</pre>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Desteklenen Arama Motorları</h2>
+        <p>Aşağıdaki arama motorları desteklenir:</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px;">
+          <span class="badge">DuckDuckGo</span>
+          <span class="badge">Brave</span>
+          <span class="badge">Startpage</span>
+          <span class="badge">Qwant</span>
+          <span class="badge">Mojeek</span>
+          <span class="badge">Ask</span>
+          <span class="badge">Marginalia</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Hata Kodları</h2>
+        <table>
+          <tr><th>Hata Kodu</th><th>Açıklama</th></tr>
+          <tr><td>blocked_or_captcha</td><td>Motor tarafından engellendi veya captcha</td></tr>
+          <tr><td>timeout_error</td><td>İstek zaman aşımına uğradı</td></tr>
+          <tr><td>no_results_or_selector_mismatch</td><td>Sonuç bulunamadı veya HTML yapısı değişti</td></tr>
+          <tr><td>network_error</td><td>Ağ bağlantı hatası</td></tr>
+          <tr><td>invalid_response</td><td>Geçersiz yanıt formatı</td></tr>
+        </table>
+      </div>
+    </main>
+  </body>
+</html>`);
 });
 
