@@ -4,8 +4,11 @@ Artado Proxy is an API that allows users to search the web more privately by sen
 
 ## Features
 
-- Sends search requests to various search engines
-- Retrieves and parses search results as JSON
+- Web search via Google (Startpage proxy) and Bing
+- Image search via Bing
+- News search via Bing News RSS
+- Video search via Bing Videos
+- Retrieves and parses all results as JSON
 - Enhances user privacy by proxying search queries
 - Allows for self-hosted deployment
 
@@ -58,23 +61,94 @@ Artado Proxy is an API that allows users to search the web more privately by sen
 
 5. **Access the Proxy**
 
-   The proxy will be running at `http://localhost:3000`. You can make search requests using the following format:
+   The proxy will be running at `http://localhost:3000`.
 
-   ```
-   http://localhost:3000/api?q={searchquery}&number={resultCount}&source={resultsource}
-   ```
+## API Endpoints
 
-   Example:
+### Web Search — `GET /api`
 
-   ```
-   http://localhost:3000/api?q=artado&number=10&source=google
-   ```
+```
+http://localhost:3000/api?q={query}&number={count}&source={source}
+```
 
-## Parameters
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `q` | ✅ | Search query |
+| `number` | ✅ | Number of results (1–50) |
+| `source` | ✅ | `google`, `bing`, or `all` |
 
-- `q`: The search query.
-- `number`: The number of search results to retrieve.
-- `source`: The search engine source (e.g., Google, Bing).
+**Example:**
+```
+http://localhost:3000/api?q=artado&number=10&source=google
+```
+
+**Response fields:** `title`, `description`, `displayUrl`, `url`, `source`
+
+---
+
+### Image Search — `GET /api/images`
+
+```
+http://localhost:3000/api/images?q={query}&number={count}
+```
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `q` | ✅ | Search query |
+| `number` | ❌ | Number of results (default: 10, max: 50) |
+
+**Example:**
+```
+http://localhost:3000/api/images?q=mountains&number=10
+```
+
+**Response fields:** `title`, `url` (full image URL), `thumbnailUrl`, `sourceUrl`, `source`
+
+---
+
+### News Search — `GET /api/news`
+
+```
+http://localhost:3000/api/news?q={query}&number={count}
+```
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `q` | ✅ | Search query |
+| `number` | ❌ | Number of results (default: 10, max: 50) |
+
+**Example:**
+```
+http://localhost:3000/api/news?q=technology&number=10
+```
+
+**Response fields:** `title`, `description`, `url`, `displayUrl`, `publishedAt`, `newsSource`, `thumbnailUrl`, `source`
+
+---
+
+### Video Search — `GET /api/videos`
+
+```
+http://localhost:3000/api/videos?q={query}&number={count}
+```
+
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `q` | ✅ | Search query |
+| `number` | ❌ | Number of results (default: 10, max: 50) |
+
+**Example:**
+```
+http://localhost:3000/api/videos?q=nature&number=10
+```
+
+**Response fields:** `title`, `url`, `thumbnailUrl`, `duration`, `publisher`, `source`
+
+---
+
+### Status — `GET /status`
+
+Returns `OK` or `BUSY` based on current request load.
 
 ## License
 
