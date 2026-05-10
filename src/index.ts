@@ -356,41 +356,50 @@ async function getVideos(q: string, n: number): Promise<VideoResult[]> {
     const results: VideoResult[] = [];
 
     try {
-        const response = await httpClient.post(
-            "https://www.startpage.com/sp/search",
-            new URLSearchParams({ q, cat: "video", num: String(limit) }).toString(),
-            {
-                headers: {
-                    ...REQUEST_HEADERS,
-                    "Content-Type": "application/x-www-form-urlencoded",
-                    "Referer": "https://www.startpage.com/"
-                }
-            }
-        );
-
-        const html = response.data as string;
-        const $ = load(html);
-
-        $("a[data-testid='vid-link']").each((_, element) => {
-            if (results.length >= limit) return false;
-
-            const url = $(element).attr("href") || "";
-            const title = $(element).find("h3").first().text().trim();
-
-            if (!title || !url) return;
-
-            results.push({
-                title,
-                url,
-                thumbnailUrl: "",
-                duration: "",
-                publisher: "",
-                source: "Startpage"
-            });
+        const response = await httpClient.get("https://www.youtube.com/results", {
+            params: { search_query: q },
+            headers: REQUEST_HEADERS
         });
 
+        const html = response.data as string;
+        const match = html.match(/var ytInitialData\s*=\s*(\{[\s\S]*?\});/);
+        if (!match) {
+            console.error("Could not find ytInitialData");
+            return results;
+        }
+
+        const data = JSON.parse(match[1]);
+        const contents = data?.contents?.twoColumnSearchResultsRenderer?.primaryContents?.sectionListRenderer?.contents || [];
+
+        for (const section of contents) {
+            const items = section?.itemSectionRenderer?.contents || [];
+            for (const item of items) {
+                const vr = item?.videoRenderer;
+                if (!vr) continue;
+
+                const videoId = vr.videoId || "";
+                const title = vr.title?.runs?.[0]?.text || "";
+                const duration = vr.lengthText?.simpleText || "";
+                const publisher = vr.ownerText?.runs?.[0]?.text || "";
+
+                if (!videoId || !title) continue;
+
+                results.push({
+                    title,
+                    url: `https://www.youtube.com/watch?v=${videoId}`,
+                    thumbnailUrl: `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`,
+                    duration,
+                    publisher,
+                    source: "YouTube"
+                });
+
+                if (results.length >= limit) break;
+            }
+            if (results.length >= limit) break;
+        }
+
     } catch (error) {
-        console.error("Error fetching videos from Startpage:", (error as Error).message);
+        console.error("Error fetching videos from YouTube:", (error as Error).message);
     }
 
     if (results.length) cacheSet(cacheKey, results);
