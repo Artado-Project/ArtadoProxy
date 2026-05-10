@@ -356,39 +356,41 @@ async function getVideos(q: string, n: number): Promise<VideoResult[]> {
     const results: VideoResult[] = [];
 
     try {
-        const response = await httpClient.get("https://www.bing.com/videos/search", {
-            params: { q, count: limit, ...BING_TR_PARAMS },
-            headers: REQUEST_HEADERS,
-            responseType: "arraybuffer"
-        });
+        const response = await httpClient.post(
+            "https://www.startpage.com/sp/search",
+            new URLSearchParams({ q, cat: "video", num: String(limit) }).toString(),
+            {
+                headers: {
+                    ...REQUEST_HEADERS,
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Referer": "https://www.startpage.com/"
+                }
+            }
+        );
 
-        const html = iconv.decode(Buffer.from(response.data), "utf-8");
+        const html = response.data as string;
         const $ = load(html);
 
-        $(".mc_vtvc").each((_, element) => {
+        $("a[data-testid='vid-link']").each((_, element) => {
             if (results.length >= limit) return false;
 
-            const link = $(element).find("a.mc_vtvc_link").first();
-            const aria = link.attr("aria-label") || "";
-            const url = $(element).find("[ourl]").first().attr("ourl") || "";
-            const thumbnailUrl = $(element).find("img").first().attr("src") || "";
-
-            const titleMatch = aria.match(/^(.+?)\s+from\s+\w/i) || aria.match(/^([^|·]+)/);
-            const title = titleMatch ? titleMatch[1].trim() : "";
-
-            const durMatch = aria.match(/Duration:\s*([^·]+)/);
-            const duration = durMatch ? durMatch[1].trim() : "";
-
-            const pubMatch = aria.match(/uploaded by ([^·]+)/);
-            const publisher = pubMatch ? pubMatch[1].trim() : "";
+            const url = $(element).attr("href") || "";
+            const title = $(element).find("h3").first().text().trim();
 
             if (!title || !url) return;
 
-            results.push({ title, url, thumbnailUrl, duration, publisher, source: "Bing" });
+            results.push({
+                title,
+                url,
+                thumbnailUrl: "",
+                duration: "",
+                publisher: "",
+                source: "Startpage"
+            });
         });
 
     } catch (error) {
-        console.error("Error fetching videos from Bing:", (error as Error).message);
+        console.error("Error fetching videos from Startpage:", (error as Error).message);
     }
 
     if (results.length) cacheSet(cacheKey, results);
