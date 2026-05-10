@@ -249,30 +249,46 @@ async function getImages(q: string, n: number): Promise<ImageResult[]> {
     const results: ImageResult[] = [];
 
     try {
-        const response = await httpClient.get("https://www.bing.com/images/search", {
-            params: { q, count: limit, first: 1, ...BING_TR_PARAMS },
-            headers: REQUEST_HEADERS,
-            responseType: "arraybuffer"
-        });
+        const response = await httpClient.post(
+            "https://www.startpage.com/sp/search",
+            new URLSearchParams({ q, cat: "pics", num: String(limit) }).toString(),
+            {
+                headers: {
+                    ...REQUEST_HEADERS,
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Referer": "https://www.startpage.com/"
+                }
+            }
+        );
 
-        const html = iconv.decode(Buffer.from(response.data), "utf-8");
+        const html = response.data as string;
         const $ = load(html);
 
-        $("a.iusc[m]").each((_, element) => {
+        $(".image-result").each((_, element) => {
             if (results.length >= limit) return false;
-            try {
-                const m = JSON.parse($(element).attr("m") || "{}");
-                const title = (m.t || "").trim();
-                const url = m.murl || "";
-                const thumbnailUrl = m.turl || "";
-                const sourceUrl = m.purl || "";
-                if (!url) return;
-                results.push({ title, url, thumbnailUrl, sourceUrl, source: "Bing" });
-            } catch { }
+
+            const noscriptHtml = $(element).find("noscript").first().html() || "";
+            const ns$ = load(noscriptHtml);
+            const img = ns$("img").first();
+            const title = (img.attr("alt") || "").trim();
+            let url = img.attr("src") || "";
+
+            if (!url) return;
+            if (url.startsWith("/")) {
+                url = "https://www.startpage.com" + url;
+            }
+
+            results.push({
+                title,
+                url,
+                thumbnailUrl: url,
+                sourceUrl: "",
+                source: "Startpage"
+            });
         });
 
     } catch (error) {
-        console.error("Error fetching images from Bing:", (error as Error).message);
+        console.error("Error fetching images from Startpage:", (error as Error).message);
     }
 
     if (results.length) cacheSet(cacheKey, results);
